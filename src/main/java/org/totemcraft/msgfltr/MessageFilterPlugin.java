@@ -291,7 +291,7 @@ public class MessageFilterPlugin extends JavaPlugin {
             String pattern = (String) map.get("pattern");
             if (pattern == null) throw new RuntimeException("pattern must be defined in replace entry");
             String replace = (String) map.get("replace");
-            if (replace == null) throw new RuntimeException("replace must be defined in replace entry");
+            if (replace == null) replace = "";
 
             Set<MessageSource> messageSources = new HashSet<>();
             //noinspection unchecked
