@@ -1,0 +1,16 @@
+sniffer: false
+
+replaces:
+- pattern: "my name is (?<name>.*?), I am (?<age>.*?) years old."
+  replace: "我 $(age) 岁，叫 $(name)。" # 如果置空则撤销信息
+  sources:
+  - 'chat' # 聊天栏信息，或action bar
+  - 'title' # 标题信息
+  - 'inv' # 物品栏标题
+  - 'item' # 物品
+  - 'bossbar'
+  - 'scoreboard' # objective 的显示名字或 score 的名字
+- pattern: "§7another replace entry writes below"
+  replace: "§7这样定义第二个替换条目"
+  sources:
+  - 'chat'

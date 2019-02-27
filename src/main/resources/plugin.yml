@@ -1,0 +1,5 @@
+name: ${project.name}
+version: ${project.version}
+main: org.totemcraft.msgfltr.MessageFilterPlugin
+depend: [ProtocolLib]
+author: i@thetd.me

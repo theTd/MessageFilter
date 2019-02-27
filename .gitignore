@@ -1,0 +1,7 @@
+.idea/
+*.iml
+out/
+target/
+*.swp
+.DS_Store
+
