@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
@@ -225,14 +226,28 @@ public class MessageFilterPlugin extends JavaPlugin {
                         handleComponentReplace(event.getPacket(), MessageSource.BOSSBAR);
                     }
                 } else if (event.getPacketType() == PacketType.Play.Server.SCOREBOARD_OBJECTIVE) {
-                    String displayName = event.getPacket().getStrings().read(1);
-                    if (displayName == null) return;
                     try {
-                        displayName = performReplace(displayName, MessageSource.SCOREBOARD);
-                    } catch (NotChangedSignal notChangedSignal) {
-                        return;
+                        String displayName = event.getPacket().getStrings().read(1);
+                        if (displayName == null) return;
+                        try {
+                            displayName = performReplace(displayName, MessageSource.SCOREBOARD);
+                        } catch (NotChangedSignal notChangedSignal) {
+                            return;
+                        }
+                        event.getPacket().getStrings().write(1, displayName);
+                    } catch (FieldAccessException e) {
+                        // try chat component
+                        WrappedChatComponent displayName = event.getPacket().getChatComponents().read(0);
+                        if (displayName == null) return;
+                        String legacyText = BaseComponent.toLegacyText(ComponentSerializer.parse(displayName.getJson()));
+                        try {
+                            legacyText = performReplace(legacyText, MessageSource.SCOREBOARD);
+                        } catch (NotChangedSignal notChangedSignal) {
+                            return;
+                        }
+                        event.getPacket().getChatComponents().write(0,
+                                WrappedChatComponent.fromJson(ComponentSerializer.toString(new TextComponent(legacyText))));
                     }
-                    event.getPacket().getStrings().write(1, displayName);
                 } else if (event.getPacketType() == PacketType.Play.Server.SCOREBOARD_SCORE) {
                     String identifier = event.getPacket().getStrings().read(0);
                     if (identifier == null) return;
